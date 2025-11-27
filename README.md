@@ -100,7 +100,7 @@ def generate_pdf_report():
     story = [] # List to hold all PDF elements (Paragraphs, Images, etc.)
 
     # 2. Add Title and Header
-    story.append(Paragraph("🎬 Automated Scene Timecode Report", styles['Title']))
+    story.append(Paragraph("Automated Scene Timecode Report", styles['Title']))
     story.append(Spacer(1, 12))
     story.append(Paragraph(f"Source Data: {CSV_INPUT}", styles['Normal']))
     story.append(Spacer(1, 24))
