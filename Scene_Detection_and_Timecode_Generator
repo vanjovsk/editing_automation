@@ -1,1 +1,56 @@
+# 1. Initialize PDF Document
+doc = SimpleDocTemplate(PDF_OUTPUT, pagesize=A4, 
+                        rightMargin=40, leftMargin=40, 
+                        topMargin=40, bottomMargin=40)
 
+styles = getSampleStyleSheet()
+story = [] # List to hold all PDF elements (Paragraphs, Images, etc.)
+
+# 2. Add Title and Header
+story.append(Paragraph("Scene Timecode Report", styles['Title']))
+story.append(Spacer(1, 12))
+story.append(Paragraph(f"Source Data: {CSV_INPUT}", styles['Normal']))
+story.append(Spacer(1, 24))
+
+# 3. Read CSV and Build Content
+if not os.path.exists(CSV_INPUT):
+    print(f"Error: CSV file not found at {CSV_INPUT}")
+    return
+
+with open(CSV_INPUT, mode='r', newline='') as file:
+    reader = csv.reader(file)
+    next(reader) # Skip header row
+    
+    for row in reader:
+        scene_num, start_tc, end_tc, duration, image_filename = row
+
+#must read the number of total scene duration to gerenate total_time:
+    for Total_time in reader:
+       
+        
+        # --- Text Content (Timecodes) ---
+        text_content = f"""
+        <b>Scene #</b>: {scene_num}<br/>
+        <b>START TC</b>: {start_tc}<br/>
+        <b>END TC</b>: {end_tc}<br/>
+        <b>Duration</b>: {duration}
+        """
+        story.append(Paragraph(text_content, styles['Normal']))
+        story.append(Spacer(1, 6))
+
+        # --- Image Preview ---
+        image_path = os.path.join(IMAGES_DIR, image_filename)
+        if os.path.exists(image_path):
+            img = Image(image_path, IMAGE_WIDTH, IMAGE_HEIGHT)
+            story.append(img)
+        else:
+            story.append(Paragraph(f"<b>[ERROR: Image Missing: {image_filename}]</b>", styles['Italic']))
+        
+        # Add separator line between scenes
+        story.append(Spacer(1, 18))
+
+# 4. Generate the PDF
+doc.build(story)
+print(f"Successfully generated PDF report: {PDF_OUTPUT}")
+
+# 5. the .pdf file should me exported for a specific .pdf file folder in the system
