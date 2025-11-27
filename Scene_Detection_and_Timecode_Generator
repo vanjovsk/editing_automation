@@ -140,7 +140,7 @@ def generate_pdf_report():
 
     # 4. Generate the PDF
     doc.build(story)
-    print(f"✅ Successfully generated PDF report: {PDF_OUTPUT}")
+    print(f"Successfully generated PDF report: {PDF_OUTPUT}")
 
 if __name__ == "__main__":
     generate_pdf_report()
